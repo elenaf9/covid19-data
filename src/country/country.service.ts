@@ -17,4 +17,8 @@ export class CountryService {
             return newCountry.save();
         }
     }
+
+    async getCountriesForContinent(continent: string): Promise<Country[]> {
+        return await this.countryModel.find({continentExp: continent}).exec();
+    }
 }

@@ -7,11 +7,12 @@ import { CountryService } from 'src/country/country.service';
 import { PopulationService } from 'src/population/population.service';
 import { Country } from 'src/country/interfaces/country.interface';
 import { Population } from 'src/population/interfaces/population.interface';
+import { ViewCasesDTO } from './dto/view-cases.dto';
 
 @Injectable()
 export class CasesService {
     constructor(
-        @InjectModel('Cases') private readonly covid19DataModel: Model<Cases>,
+        @InjectModel('Cases') private readonly casesModel: Model<Cases>,
         private countryService: CountryService,
         private populationService: PopulationService
         ) { }
@@ -28,11 +29,43 @@ export class CasesService {
             await this.populationService.createOrFindPopulationData(populationData);
             const date = new Date();
             date.setFullYear(entry.year, entry.month, entry.day);
-            let newCases = await this.covid19DataModel({ countryGeoId: country.geoId, date, ...entry });
+            let newCases = await this.casesModel({ countryGeoId: country.geoId, date, ...entry });
             newCases = await newCases.save();
             newData.push(newCases);
         }
         return newData;
     }
 
+    async getCasesForCountry(geoId: string): Promise<ViewCasesDTO> {
+        const cases: Cases[] = await this.casesModel.find({countryGeoId: geoId}).exec();
+        const viewCases: ViewCasesDTO = {countryGeoId: geoId, cases: [], deaths: []};
+        cases.forEach(c => {
+            if (c.cases) {
+                viewCases.cases.push({x: c.date, y: c.cases});
+            }
+            if (c.deaths) {
+                viewCases.deaths.push({x: c.date, y: c.deaths})
+            }
+        });
+        return viewCases;
+    }
+
+    async getCasesByContinent(continent: string): Promise<ViewCasesDTO[]> {
+        const countries: Country[] = await this.countryService.getCountriesForContinent(continent);
+        const casesForContinent = [];
+        for (const country of countries) {
+            const cases: Cases[] = await this.casesModel.find({countryGeoId: country.geoId}).exec();
+            const viewCases: ViewCasesDTO = {countryGeoId: country.geoId, cases: [], deaths: []};
+            cases.forEach(c => {
+                if (c.cases) {
+                    viewCases.cases.push({x: c.date, y: c.cases});
+                }
+                if (c.deaths) {
+                    viewCases.deaths.push({x: c.date, y: c.deaths})
+                }
+            });
+            casesForContinent.push(viewCases);
+        }
+        return casesForContinent;
+    }
 }
