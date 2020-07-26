@@ -12,13 +12,13 @@ export class CasesController {
         return res.status(HttpStatus.OK).json(cases);
     }
 
-    @Get('/data/byCountry/:geoId')
+    @Get('/byCountry/:geoId')
     async getCasesByCountry(@Res() res, @Param('geoId') geoId: string) {
         const data = await this.casesService.getCasesForCountry(geoId);
         return res.status(HttpStatus.OK).json(data);
     }
 
-    @Get('/data/byContinent/:continent')
+    @Get('/byContinent/:continent')
     async getCasesByContinent(@Res() res, @Param('continent') continent: string) {
         const data = await this.casesService.getCasesByContinent(continent);
         return res.status(HttpStatus.OK).json(data);
