@@ -21,4 +21,8 @@ export class CountryService {
     async getCountriesForContinent(continent: string): Promise<Country[]> {
         return await this.countryModel.find({continentExp: continent}).exec();
     }
+
+    async getAllCountries(): Promise<Country[]> {
+        return await this.countryModel.find({});
+    }
 }
