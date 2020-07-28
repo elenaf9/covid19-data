@@ -13,7 +13,7 @@ export class PopulationService {
         if (existingPopulationData.length > 0) {
             let updatePopulation = existingPopulationData[0];
             if (updatePopulation.population !== population.population) {
-                console.log("Populations Data for same year and country differs, updating existing Data.");
+                // console.log("Populations Data for same year and country differs, updating existing Data.");
                 updatePopulation = await this.populationModel.findOneAndUpdate(
                     {countryGeoId: updatePopulation.countryGeoId}, 
                     {population: updatePopulation.population}

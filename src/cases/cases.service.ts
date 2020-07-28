@@ -21,12 +21,14 @@ export class CasesService {
         const newData: Cases[] = [];
         for (const entry of data) {
             const country: Country = await this.countryService.createOrFindCountry(entry);
-            const populationData: Population = {
-                countryGeoId: country.geoId,
-                population: entry.popData2018,
-                year: "2018"
-            };
-            await this.populationService.createOrFindPopulationData(populationData);
+            if (entry.popData2018) {
+                const populationData: Population = {
+                    countryGeoId: country.geoId,
+                    population: entry.popData2018,
+                    year: "2018"
+                };
+                await this.populationService.createOrFindPopulationData(populationData);
+            }
             const date = new Date();
             date.setFullYear(entry.year, entry.month, entry.day);
             let newCases = await this.casesModel({ countryGeoId: country.geoId, date, ...entry });
