@@ -30,7 +30,7 @@ export class CasesService {
                 await this.populationService.createOrFindPopulationData(populationData);
             }
             const date = new Date();
-            date.setUTCFullYear(entry.year, entry.month, entry.day);
+            date.setUTCFullYear(entry.year, entry.month - 1, entry.day);
             date.setUTCHours(0, 0, 0, 0);
             let newCases = await this.casesModel({ countryGeoId: country.geoId, date, ...entry });
             newCases = await newCases.save();
