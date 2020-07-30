@@ -30,9 +30,15 @@ export class CasesService {
                 await this.populationService.createOrFindPopulationData(populationData);
             }
             const date = new Date();
-            date.setUTCFullYear(entry.year, entry.month - 1, entry.day);
-            date.setUTCHours(0, 0, 0, 0);
-            let newCases = await this.casesModel({ countryGeoId: country.geoId, date, ...entry });
+            date.setFullYear(entry.year, entry.month - 1, entry.day);
+            date.setHours(0, 0, 0, 0);
+            let newCases = await this.casesModel({
+                countryGeoId:
+                country.geoId,
+                date,
+                cases: entry.cases? entry.cases : 0,
+                deaths: entry.deaths? entry.deaths : 0
+            });
             newCases = await newCases.save();
             newData.push(newCases);
         }
@@ -43,10 +49,10 @@ export class CasesService {
         const cases: Cases[] = await this.casesModel.find({countryGeoId: geoId}).exec();
         const viewCases: ViewCasesDTO = {countryGeoId: geoId, cases: [], deaths: []};
         cases.forEach(c => {
-            if (c.cases) {
+            if (c.cases !== null) {
                 viewCases.cases.push({x: c.date, y: c.cases});
             }
-            if (c.deaths) {
+            if (c.deaths !== null) {
                 viewCases.deaths.push({x: c.date, y: c.deaths})
             }
         });
