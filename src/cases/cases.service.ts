@@ -83,6 +83,7 @@ export class CasesService {
           deaths: cases[0].deaths,
           deathsPerPop: (cases[0].deaths * 1000000) / population,
           countryName: country.name,
+          key: country.name,
         };
         casesForDate.push(viewTable);
       }
@@ -117,3 +118,4 @@ export class CasesService {
     return casesForContinent;
   }
 }
+

@@ -4,4 +4,5 @@ export class ViewTableDTO {
   deaths: number;
   deathsPerPop: number;
   countryName: string;
+  key: string;
 }
