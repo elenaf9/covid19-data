@@ -56,10 +56,10 @@ export class CasesService {
       deaths: [],
     };
     cases.forEach(c => {
-      if (c.cases) {
+      if (c.cases !== null) {
         viewCases.cases.push({ x: c.date, y: c.cases });
       }
-      if (c.deaths) {
+      if (c.deaths !== null) {
         viewCases.deaths.push({ x: c.date, y: c.deaths });
       }
     });
